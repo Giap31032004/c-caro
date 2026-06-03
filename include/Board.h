@@ -55,6 +55,7 @@ public:
 private:
     int countDirection(int row, int col, char symbol, int dx, int dy) const;
     bool isBlockedAt(int row, int col, char symbol) const;
+    void printDivider() const;
 };
 
 #endif

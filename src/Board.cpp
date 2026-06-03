@@ -52,19 +52,20 @@ WinRule Board::getWinRule() const
 
 void Board::displayBoard(int lastRow, int lastCol) const
 {
-    cout << "\n=> X and O. Last move is shown in brackets.\n\n";
-    cout << "    ";
+    cout << "\nLast move is shown in brackets.\n\n";
+    cout << "     ";
 
     for (int col = 0; col < currentSize; col++)
     {
-        cout << setw(3) << col << " ";
+        cout << setw(3) << col << ' ';
     }
 
     cout << '\n';
+    printDivider();
 
     for (int row = 0; row < currentSize; row++)
     {
-        cout << setw(3) << row << " ";
+        cout << setw(3) << row << " |";
 
         for (int col = 0; col < currentSize; col++)
         {
@@ -72,16 +73,31 @@ void Board::displayBoard(int lastRow, int lastCol) const
 
             if (row == lastRow && col == lastCol && cell != emptyCell)
             {
-                cout << '[' << cell << "] ";
+                cout << '[' << cell << ']';
             }
             else
             {
-                cout << ' ' << cell << "  ";
+                cout << ' ' << cell << ' ';
             }
+
+            cout << '|';
         }
 
         cout << '\n';
+        printDivider();
     }
+}
+
+void Board::printDivider() const
+{
+    cout << "    +";
+
+    for (int col = 0; col < currentSize; col++)
+    {
+        cout << "---+";
+    }
+
+    cout << '\n';
 }
 
 bool Board::checkFull() const

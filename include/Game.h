@@ -17,7 +17,7 @@ struct GameSettings
     int boardSize = Board::defaultSize;
     WinRule winRule = FiveOrMore;
     bool randomFirstPlayer = false;
-    bool chooseSymbol = true;
+    bool chooseSymbol = false;
     bool timeLimitEnabled = false;
     int turnTimeLimitSeconds = 30;
     BotStyle botStyle = Balanced;
