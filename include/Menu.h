@@ -12,6 +12,10 @@ int inputMenuChoice();
 void menu();
 void replayMenu();
 void playVsBotMenu();
+void botVsBotMenu();
+void settingsMenu(GameSettings &settings);
+BotLevel inputBotLevel();
+BotStyle inputBotStyle();
 void showGuide();
 
 #endif

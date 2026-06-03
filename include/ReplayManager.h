@@ -5,15 +5,9 @@
 #include <vector>
 
 #include "Board.h"
+#include "Move.h"
 
 using namespace std;
-
-struct Move
-{
-    int row;
-    int col;
-    char symbol;
-};
 
 class ReplayManager
 {

@@ -23,7 +23,7 @@ void Player::inputMove(int &row, int &col)
 {
     while (true)
     {
-        cout << "Enter position (row and column, 0-9): ";
+        cout << "Enter position (row and column): ";
         if (!(cin >> row >> col))
         {
             cin.clear();
@@ -37,7 +37,7 @@ void Player::inputMove(int &row, int &col)
             break;
         }
 
-        cout << "Coordinates must be between 0 and 9. Please try again.\n";
+        cout << "Coordinates must be inside the board. Please try again.\n";
     }
 }
 
