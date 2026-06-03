@@ -208,104 +208,116 @@ bool Game::handleHumanTurn(const string &playerName,
                            int &col,
                            bool &quitGame)
 {
-    string line;
-
-    cout << "Command (" << playerName << "): ";
-    getline(cin >> ws, line);
-
-    if (line == "help")
+    while (true)
     {
-        showHelp();
-        return false;
-    }
+        string line;
 
-    if (line == "history")
-    {
-        showHistory();
-        return false;
-    }
+        cout << "Enter move for " << playerName
+             << " (" << symbol << ") [row col, or help]: ";
+        getline(cin >> ws, line);
 
-    if (line == "hint")
-    {
-        showHint(symbol, symbol == 'X' ? 'O' : 'X');
-        return false;
-    }
-
-    if (line == "pause")
-    {
-        cout << "Game paused. Press Enter to resume...";
-        cin.get();
-        return false;
-    }
-
-    if (line == "quit")
-    {
-        quitGame = true;
-        cout << "Game quit.\n";
-        return false;
-    }
-
-    if (line == "undo")
-    {
-        if (moveHistory.empty())
+        if (line == "help")
         {
-            cout << "No move to undo.\n";
+            showHelp();
+            continue;
+        }
+
+        if (line == "history")
+        {
+            showHistory();
+            continue;
+        }
+
+        if (line == "hint")
+        {
+            showHint(symbol, symbol == 'X' ? 'O' : 'X');
+            continue;
+        }
+
+        if (line == "pause")
+        {
+            cout << "Game paused. Press Enter to resume...";
+            cin.get();
+            continue;
+        }
+
+        if (line == "quit")
+        {
+            quitGame = true;
+            cout << "Game quit.\n";
             return false;
         }
 
-        Move last = moveHistory.back();
-        moveHistory.pop_back();
-        board.removeMove(last.row, last.col);
-        redoHistory.push_back(last);
-        currentPlayerIndex = 1 - currentPlayerIndex;
-
-        cout << "Move undone. It is now " << last.playerName << "'s turn again.\n";
-        return false;
-    }
-
-    if (line == "redo")
-    {
-        if (redoHistory.empty())
+        if (line == "undo")
         {
-            cout << "No move to redo.\n";
+            if (moveHistory.empty())
+            {
+                cout << "No move to undo.\n";
+                continue;
+            }
+
+            Move last = moveHistory.back();
+            moveHistory.pop_back();
+            board.removeMove(last.row, last.col);
+            redoHistory.push_back(last);
+            currentPlayerIndex = 1 - currentPlayerIndex;
+
+            cout << "Move undone. It is now " << last.playerName << "'s turn again.\n";
             return false;
         }
 
-        Move move = redoHistory.back();
-
-        if (move.symbol != symbol)
+        if (line == "redo")
         {
-            cout << "Redo is available on " << move.playerName << "'s turn.\n";
-            return false;
+            if (redoHistory.empty())
+            {
+                cout << "No move to redo.\n";
+                continue;
+            }
+
+            Move move = redoHistory.back();
+
+            if (move.symbol != symbol)
+            {
+                cout << "Redo is available on " << move.playerName << "'s turn.\n";
+                continue;
+            }
+
+            redoHistory.pop_back();
+
+            if (!board.placeMove(move.row, move.col, move.symbol))
+            {
+                cout << "Redo failed because the cell is no longer available.\n";
+                continue;
+            }
+
+            row = move.row;
+            col = move.col;
+            return true;
         }
 
-        redoHistory.pop_back();
-
-        if (!board.placeMove(move.row, move.col, move.symbol))
+        for (char &ch : line)
         {
-            cout << "Redo failed because the cell is no longer available.\n";
-            return false;
+            if (ch == ',' || ch == ';' || ch == '(' || ch == ')')
+            {
+                ch = ' ';
+            }
         }
 
-        row = move.row;
-        col = move.col;
+        stringstream ss(line);
+
+        if (!(ss >> row >> col))
+        {
+            cout << "Invalid move. Enter two numbers, for example: 0 0.\n";
+            continue;
+        }
+
+        if (!board.placeMove(row, col, symbol))
+        {
+            continue;
+        }
+
         return true;
     }
-
-    stringstream ss(line);
-
-    if (!(ss >> row >> col))
-    {
-        cout << "Invalid command. Type help for available commands.\n";
-        return false;
-    }
-
-    if (!board.placeMove(row, col, symbol))
-    {
-        return false;
-    }
-
-    return true;
 }
 
 void Game::showHistory() const
